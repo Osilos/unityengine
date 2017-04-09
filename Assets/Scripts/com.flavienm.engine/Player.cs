@@ -28,11 +28,21 @@ namespace com.flavienm.engine
 
         private void OnTriggerEnter(Collider collider)
         {
-            if (collider.gameObject.layer == layerKill)
+            OnHitCollider(collider.gameObject.layer);
+        }
+
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            OnHitCollider(collider.gameObject.layer);
+        }
+
+        private void OnHitCollider (int colliderLayer)
+        {
+            if (colliderLayer == layerKill)
             {
                 OnKill();
             }
-            else if (collider.gameObject.layer == layerMark)
+            else if (colliderLayer == layerMark)
             {
                 OnMark();
             }

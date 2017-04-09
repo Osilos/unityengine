@@ -39,6 +39,7 @@ namespace com.flavienm.engine
             
             com.flavienm.engine.Player.Killed += OnPlayerKilled;
             ActionHUD.OnPlay += StartGame;
+            ActionHUD.OnMenu += GoMenu;
             DispatchMenuEvent();
         }
 
@@ -57,8 +58,8 @@ namespace com.flavienm.engine
             currentDifficulty = 0f;
             difficulty = 0f;
 
-            if (isSoundEnabel)
-                loseSound.Play();
+//            if (isSoundEnabel)
+//                loseSound.Play();
             
             DispatchGameOverEvent();
         }
