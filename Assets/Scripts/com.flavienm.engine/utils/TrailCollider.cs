@@ -6,6 +6,7 @@ using UnityEngine;
 namespace com.flavienm.superhex
 {
     [RequireComponent(typeof(TrailRenderer))]
+    [AddComponentMenu("Custom/TrailCollider")]
     public class TrailCollider : MonoBehaviour
     {
         [SerializeField]
@@ -14,10 +15,12 @@ namespace com.flavienm.superhex
         private List<EdgeCollider2D> edges = new List<EdgeCollider2D>();
         [SerializeField]
         private int maxPointsInEdgeCollider;
+        [SerializeField]
+        private bool edgeColliderIsTrigger;
 
         private List<List<Vector2>> pointLists = new List<List<Vector2>>();
         private int lastMaxIndex = 0;
-
+        
         private void Awake ()
         {
             trail = GetComponent<TrailRenderer>();
@@ -26,6 +29,7 @@ namespace com.flavienm.superhex
 
         public void Reset ()
         {
+            if(trail == null ) trail = GetComponent<TrailRenderer>();
             trail.Clear();
             ResetEdge();
         }
@@ -98,7 +102,7 @@ namespace com.flavienm.superhex
         private void AddNewEdgeCollider ()
         {
             EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
-            edgeCollider.isTrigger = true;
+            edgeCollider.isTrigger = edgeColliderIsTrigger;
             edges.Add(edgeCollider);
         }
 
