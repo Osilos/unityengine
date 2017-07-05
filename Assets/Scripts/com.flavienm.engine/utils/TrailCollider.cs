@@ -43,15 +43,14 @@ namespace com.flavienm.superhex
 
         public void Reset ()
         {
-            Debug.Log("RESET");
             if(trail == null ) trail = GetComponent<TrailRenderer>();
+            
             trail.Clear();
             ResetEdge();
         }
 
         private void ResetEdge ()
         {
-            Debug.Log("RESET EDGE");
             foreach(EdgeCollider2D edge in edges)
             {
                 Destroy(edge);
@@ -100,7 +99,6 @@ namespace com.flavienm.superhex
 
         private void AddNewPointList ()
         {
-            Debug.Log("ADD NEW POINT LIST");
             pointLists.Add(new List<Vector2>());
         }
 
@@ -120,6 +118,12 @@ namespace com.flavienm.superhex
         {
             EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
             edgeCollider.isTrigger = edgeColliderIsTrigger;
+
+            if (trailPhysicsProperty != null)
+            {
+                edgeCollider.sharedMaterial = trailPhysicsProperty;
+            }
+
             edgeColliderRunTime = edgeColliderIsTrigger;
             edges.Add(edgeCollider);
         }
@@ -137,7 +141,6 @@ namespace com.flavienm.superhex
         {
             if (edgeColliderRunTime != edgeColliderIsTrigger) 
             {
-                Debug.Log("IS TRIGGER CHANGED");
                 edgeColliderRunTime = edgeColliderIsTrigger;
                 foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
             }
@@ -148,17 +151,6 @@ namespace com.flavienm.superhex
                     AddNewEdgeCollider();
                 if (pointLists[i].Count > 1)
                     SetEdgePoints(edges[i], GetLocalArray(pointLists[i]));
-            }
-            Debug.Log(edges.Count);
-            Debug.Log(pointLists.Count);
-        }
-
-        public void RemoveEdgeCollider()
-        {
-            Debug.Log("TEST REMOVE COLLIDER");
-           if(lastMaxIndex/pointLists.Count > edges.Count)
-            {
-                
             }
         }
     }
