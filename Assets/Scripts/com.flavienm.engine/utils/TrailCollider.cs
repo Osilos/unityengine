@@ -17,18 +17,33 @@ namespace com.flavienm.superhex
         private int maxPointsInEdgeCollider;
         [SerializeField]
         private bool edgeColliderIsTrigger;
+        private bool edgeColliderRunTime;
 
         private List<List<Vector2>> pointLists = new List<List<Vector2>>();
         private int lastMaxIndex = 0;
+
+        [Header("/!\\Trail Renderer Physics Material/!\\")]
+        [SerializeField]
+        public PhysicsMaterial2D trailPhysicsProperty;
         
+
         private void Awake ()
         {
+            TrailCollider[] trailsTemp = GetComponents<TrailCollider>();
+            if(trailsTemp.Length > 1)
+            {
+                for (int i = 1; i < trailsTemp.Length; i++)
+                {
+                    Destroy(trailsTemp[i]);
+                }
+            }
             trail = GetComponent<TrailRenderer>();
             Reset();
         }
 
         public void Reset ()
         {
+            Debug.Log("RESET");
             if(trail == null ) trail = GetComponent<TrailRenderer>();
             trail.Clear();
             ResetEdge();
@@ -36,6 +51,7 @@ namespace com.flavienm.superhex
 
         private void ResetEdge ()
         {
+            Debug.Log("RESET EDGE");
             foreach(EdgeCollider2D edge in edges)
             {
                 Destroy(edge);
@@ -84,6 +100,7 @@ namespace com.flavienm.superhex
 
         private void AddNewPointList ()
         {
+            Debug.Log("ADD NEW POINT LIST");
             pointLists.Add(new List<Vector2>());
         }
 
@@ -103,6 +120,7 @@ namespace com.flavienm.superhex
         {
             EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
             edgeCollider.isTrigger = edgeColliderIsTrigger;
+            edgeColliderRunTime = edgeColliderIsTrigger;
             edges.Add(edgeCollider);
         }
 
@@ -117,6 +135,12 @@ namespace com.flavienm.superhex
 
         private void Update()
         {
+            if (edgeColliderRunTime != edgeColliderIsTrigger) 
+            {
+                Debug.Log("IS TRIGGER CHANGED");
+                edgeColliderRunTime = edgeColliderIsTrigger;
+                foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
+            }
             UpdateEdgePoints();
             for (int i = 0; i < pointLists.Count; i++)
             {
@@ -124,6 +148,17 @@ namespace com.flavienm.superhex
                     AddNewEdgeCollider();
                 if (pointLists[i].Count > 1)
                     SetEdgePoints(edges[i], GetLocalArray(pointLists[i]));
+            }
+            Debug.Log(edges.Count);
+            Debug.Log(pointLists.Count);
+        }
+
+        public void RemoveEdgeCollider()
+        {
+            Debug.Log("TEST REMOVE COLLIDER");
+           if(lastMaxIndex/pointLists.Count > edges.Count)
+            {
+                
             }
         }
     }
