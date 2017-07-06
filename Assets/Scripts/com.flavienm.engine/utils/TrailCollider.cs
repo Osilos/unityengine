@@ -30,9 +30,10 @@ namespace com.flavienm.superhex
         private void Awake ()
         {
             TrailCollider[] trailsTemp = GetComponents<TrailCollider>();
+            int trailTempLength = trailsTemp.Length;
             if(trailsTemp.Length > 1)
             {
-                for (int i = 1; i < trailsTemp.Length; i++)
+                for (int i = 1; i < trailTempLength; i++)
                 {
                     Destroy(trailsTemp[i]);
                 }
@@ -55,6 +56,7 @@ namespace com.flavienm.superhex
             {
                 Destroy(edge);
             }
+            edges.Clear();
             pointLists.Clear();
             AddNewPointList();
             lastMaxIndex = 0;
@@ -63,13 +65,14 @@ namespace com.flavienm.superhex
         private void UpdateEdgePoints ()
         {
             Vector3[] positions = GetPositionsTrail();
-            for (int i = lastMaxIndex; i < positions.Length; i++)
+            int positionsLength = positions.Length;
+            for (int i = lastMaxIndex; i < positionsLength; i++)
             {
                 AddPosition(positions[i]);
                 if (pointLists[pointLists.Count - 1].Count >= maxPointsInEdgeCollider)
                     AddNewPointList();
             }
-            lastMaxIndex = positions.Length;
+            lastMaxIndex = positionsLength /*positions.Length*/;
         }
 
         private void AddPosition(Vector3 position)
@@ -109,10 +112,10 @@ namespace com.flavienm.superhex
             return positions;
         }
 
-        private void SetEdgePoints(EdgeCollider2D edge, Vector2[] points)
+        /*private void SetEdgePoints(EdgeCollider2D edge, Vector2[] points)
         {
             edge.points = points;
-        }
+        }*/
 
         private void AddNewEdgeCollider ()
         {
@@ -125,29 +128,56 @@ namespace com.flavienm.superhex
             }
 
             edgeColliderRunTime = edgeColliderIsTrigger;
+            edgeCollider.points = new Vector2[] { Vector2.zero, Vector2.zero };
             edges.Add(edgeCollider);
         }
 
-        private Vector2[] GetLocalArray (List<Vector2> list)
+        private void SetEdgePoints(EdgeCollider2D edge, Vector3[] points)
+        {
+            int max = points.Length;
+            Vector2[] pointsForEdge = new Vector2[max];
+            for (int i = 0; i < max; i++)
+            {
+                pointsForEdge[i] = new Vector2(points[i].x, points[i].y);
+            }
+            edge.points = pointsForEdge;
+        }
+
+        private Vector3[] GetLocalArray(List<Vector2> list)
+        {
+            int max = list.Count;
+            Vector3[] pointsEdge = new Vector3[max];
+            for (int i = 0; i < max; i++)
+                pointsEdge[i] = transform.InverseTransformPoint(list[i]);
+
+            return pointsEdge;
+        }
+
+        /*private Vector2[] GetLocalArray (List<Vector2> list)
         {
             Vector2[] pointsEdge = new Vector2[list.Count];
             list.CopyTo(pointsEdge, 0);
             for (int i = 0; i <pointsEdge.Length; i++)
                 pointsEdge[i] = transform.InverseTransformPoint(pointsEdge[i]);
             return pointsEdge;
-        }
+        }*/
 
         private void Update()
         {
+            int pointListsLength;
+            
+            int maxEdge = edges.Count;
             if (edgeColliderRunTime != edgeColliderIsTrigger) 
             {
                 edgeColliderRunTime = edgeColliderIsTrigger;
                 foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
             }
             UpdateEdgePoints();
-            for (int i = 0; i < pointLists.Count; i++)
+
+            pointListsLength = pointLists.Count;
+            for (int i = 0; i < pointListsLength; i++)
             {
-                if (i >= edges.Count)
+                if (i >= maxEdge)
                     AddNewEdgeCollider();
                 if (pointLists[i].Count > 1)
                     SetEdgePoints(edges[i], GetLocalArray(pointLists[i]));
