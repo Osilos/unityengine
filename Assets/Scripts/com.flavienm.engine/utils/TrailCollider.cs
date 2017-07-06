@@ -24,14 +24,14 @@ namespace com.flavienm.superhex
 
         [Header("/!\\Trail Renderer Physics Material/!\\")]
         [SerializeField]
-        public PhysicsMaterial2D trailPhysicsProperty;
+        private PhysicsMaterial2D trailPhysicsProperty;
         
 
         private void Awake ()
         {
             TrailCollider[] trailsTemp = GetComponents<TrailCollider>();
             int trailTempLength = trailsTemp.Length;
-            if(trailsTemp.Length > 1)
+            if (trailsTemp.Length > 1)
             {
                 for (int i = 1; i < trailTempLength; i++)
                 {
@@ -72,7 +72,7 @@ namespace com.flavienm.superhex
                 if (pointLists[pointLists.Count - 1].Count >= maxPointsInEdgeCollider)
                     AddNewPointList();
             }
-            lastMaxIndex = positionsLength /*positions.Length*/;
+            lastMaxIndex = positionsLength;
         }
 
         private void AddPosition(Vector3 position)
@@ -112,11 +112,6 @@ namespace com.flavienm.superhex
             return positions;
         }
 
-        /*private void SetEdgePoints(EdgeCollider2D edge, Vector2[] points)
-        {
-            edge.points = points;
-        }*/
-
         private void AddNewEdgeCollider ()
         {
             EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
@@ -153,15 +148,6 @@ namespace com.flavienm.superhex
             return pointsEdge;
         }
 
-        /*private Vector2[] GetLocalArray (List<Vector2> list)
-        {
-            Vector2[] pointsEdge = new Vector2[list.Count];
-            list.CopyTo(pointsEdge, 0);
-            for (int i = 0; i <pointsEdge.Length; i++)
-                pointsEdge[i] = transform.InverseTransformPoint(pointsEdge[i]);
-            return pointsEdge;
-        }*/
-
         private void Update()
         {
             int pointListsLength;
@@ -169,8 +155,7 @@ namespace com.flavienm.superhex
             int maxEdge = edges.Count;
             if (edgeColliderRunTime != edgeColliderIsTrigger) 
             {
-                edgeColliderRunTime = edgeColliderIsTrigger;
-                foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
+                ChangeEdgeColliderTrigger();
             }
             UpdateEdgePoints();
 
@@ -182,6 +167,26 @@ namespace com.flavienm.superhex
                 if (pointLists[i].Count > 1)
                     SetEdgePoints(edges[i], GetLocalArray(pointLists[i]));
             }
+        }
+
+        public void ChangePhysicsMaterial2D(PhysicsMaterial2D newMaterial)
+        {
+            trailPhysicsProperty = newMaterial;
+            foreach (EdgeCollider2D edge in edges)
+            {
+                edge.sharedMaterial = trailPhysicsProperty;
+            }
+        }
+
+        public string GetCurrentPhysicsMaterial2D()
+        {
+           return trailPhysicsProperty.name;
+        }
+
+        public void ChangeEdgeColliderTrigger()
+        {
+            edgeColliderRunTime = edgeColliderIsTrigger;
+            foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
         }
     }
 }
