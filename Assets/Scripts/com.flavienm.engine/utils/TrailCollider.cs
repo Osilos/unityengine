@@ -183,10 +183,15 @@ namespace com.flavienm.superhex
            return trailPhysicsProperty.name;
         }
 
-        public void ChangeEdgeColliderTrigger()
+        private void ChangeEdgeColliderTrigger()
         {
             edgeColliderRunTime = edgeColliderIsTrigger;
             foreach (EdgeCollider2D edge in edges) edge.isTrigger = edgeColliderIsTrigger;
+        }
+
+        public void IsTrigger(bool state)
+        {
+            edgeColliderIsTrigger = state;
         }
     }
 }
