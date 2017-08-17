@@ -22,6 +22,9 @@ namespace com.flavienm.superhex
         private List<List<Vector2>> pointLists = new List<List<Vector2>>();
         private int lastMaxIndex = 0;
 
+        [SerializeField]
+        private bool optimisation;
+
         [Header("/!\\Trail Renderer Physics Material/!\\")]
         [SerializeField]
         private PhysicsMaterial2D trailPhysicsProperty;
@@ -84,10 +87,14 @@ namespace com.flavienm.superhex
                 return;
             }
 
-            if (HasSameDirection(list[list.Count - 2], list[list.Count - 1], position))
+            if (HasSameDirection(list[list.Count - 2], list[list.Count - 1], position) && optimisation)
+            {
                 list[list.Count - 1] = position;
+            }
             else
+            {
                 list.Add(position);
+            }
         }
 
         private bool HasSameDirection (Vector3 start, Vector3 endA, Vector3 endB)
