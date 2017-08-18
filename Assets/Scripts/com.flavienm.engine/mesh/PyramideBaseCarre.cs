@@ -3,21 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace com.flavienm.engine.mesh
 {
-    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-    public class PyramideBaseCarre : MonoBehaviour
+    public class PyramideBaseCarre : CustomMesh
     {
         public float xSize, ySize, zSize;
 
         private Color[] color = { Color.black, Color.blue, Color.yellow, Color.red, Color.green };
-        private Mesh mesh;
-        private Vector3[] vertices;
-        int[] triangles;
-
-        private void Awake()
-        {
-            Generate();
-        }
-        private void Generate()
+        
+        protected override void Generate()
         {
 
             triangles = new int[(int)xSize * (int)zSize * 6 +12];
@@ -32,7 +24,7 @@ namespace com.flavienm.engine.mesh
 
         }
 
-        private void CreateVertices()
+        protected override void CreateVertices()
         {
             vertices = new Vector3[5];
             int v = 0;
@@ -59,15 +51,6 @@ namespace com.flavienm.engine.mesh
         }
         private void CreateBase()
         {
-            
-            /*for (int ti = 0, vi = 0, x = 0; x < xSize; x++, ti += 6, vi++)
-            {
-                triangles[ti] = vi;
-                triangles[ti + 3] = triangles[ti + 2] = vi + 1;
-                triangles[ti + 4] = triangles[ti + 1] = vi + (int)xSize + 1;
-                triangles[ti + 5] = vi + (int)xSize + 2;
-            }*/
-
             triangles[0] = 0; //a
             triangles[1] = 1; //b
             triangles[2] = 2; // c
@@ -75,9 +58,6 @@ namespace com.flavienm.engine.mesh
             triangles[3] = 2; // b
             triangles[4] = 3; // d
             triangles[5] = 0; // c
-
-
-
 
         }
         private void CreateFaces()
@@ -97,17 +77,6 @@ namespace com.flavienm.engine.mesh
             triangles[15] = 4;
             triangles[16] = 0;
             triangles[17] = 3;
-
-        }
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
 
         }
 

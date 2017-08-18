@@ -4,25 +4,11 @@ using UnityEngine;
 
 namespace com.flavienm.engine.mesh
 {
-
-
-    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-    public class CubeMesh : MonoBehaviour
+    public class CubeMesh : CustomMesh
     {
-
-
         public int xSize, ySize, zSize;
 
-        private Mesh mesh;
-        private Vector3[] vertices;
-
-        private void Awake()
-        {
-
-            Generate();
-        }
-
-        private void Generate()
+        protected override void Generate()
         {
             GetComponent<MeshFilter>().mesh = mesh = new Mesh();
             mesh.name = "Procedural Cube";
@@ -41,7 +27,7 @@ namespace com.flavienm.engine.mesh
             return i + 6;
         }
 
-        private void CreateTriangles()
+        protected override void CreateTriangles()
         {
             int quads = (xSize * ySize + xSize * zSize + ySize * zSize) * 2;
             int[] triangles = new int[quads * 6];
@@ -137,7 +123,7 @@ namespace com.flavienm.engine.mesh
             return t;
         }
 
-        private void CreateVertices()
+        protected override void CreateVertices()
         {
 
             int cornerVertices = 8;
